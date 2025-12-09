@@ -493,7 +493,8 @@ def plot_variants_by_iteration(df, activity_column='activity', output_dir=None, 
     df = df.sort_values(['iteration', activity_column], ascending=[True, True])
     df = df.reset_index(drop=True)
 
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(20, 6))
+    x_positions = np.arange(len(df)) * spacing
     
     # Plot each variant in the order of the dataframe, colored by iteration
     for iteration, group in df.groupby('iteration'):
