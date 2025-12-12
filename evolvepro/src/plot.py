@@ -478,7 +478,7 @@ def plot_by_round_split(df, variable='activity_binary_percentage_mean', split_va
     
     plt.show()
 
-def plot_variants_by_iteration(df, activity_column='activity', output_dir=None, output_file=None):
+def plot_variants_by_iteration(df, activity_column='activity', output_dir=None, output_file=None, spacing =1.4 ):
     """
     Simple bar plot of variants grouped by iteration.
     
