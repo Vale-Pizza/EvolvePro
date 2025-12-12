@@ -504,7 +504,8 @@ def plot_variants_by_iteration(df, activity_column='activity', output_dir=None, 
     plt.xticks(df.index, df['variant'], rotation=45)
     plt.ylabel(activity_column.capitalize())
     plt.legend()
-    
+    plt.axhline(y=threshold, color='red', linestyle='--', linewidth=1.5, label=f"Threshold ({threshold})")
+
     plt.tight_layout()
 
     if output_dir and output_file:
