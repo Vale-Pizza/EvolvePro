@@ -478,38 +478,60 @@ def plot_by_round_split(df, variable='activity_binary_percentage_mean', split_va
     
     plt.show()
 
-def plot_variants_by_iteration(df, activity_column='activity', output_dir=None, output_file=None, threshold=0, spacing =1.4 ):
-    """
-    Simple bar plot of variants grouped by iteration.
-    
-    Args:
-    df: DataFrame with 'variant', 'iteration', and activity column
-    activity_column: Column name containing activity values
-    output_dir: Directory to save the plot
-    output_file: Filename for the saved plot
-    """
-    # sort the dataframe by iteration and the activity column within each iteration
+def plot_variants_by_iteration(df, activity_column='activity',
+                               output_dir=None, output_file=None,
+                               threshold=0, spacing=1.4):
+
+    import os
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    # Sort data
     df['iteration'] = df['iteration'].astype(int)
-    df = df.sort_values(['iteration', activity_column], ascending=[True, True])
-    df = df.reset_index(drop=True)
+    df = df.sort_values(['iteration', activity_column]).reset_index(drop=True)
 
     plt.figure(figsize=(20, 6))
-    x_positions = np.arange(len(df)) * spacing
-    
-    # Plot each variant in the order of the dataframe, colored by iteration
-    for iteration, group in df.groupby('iteration'):
-        plt.bar(group.index, group[activity_column], label=f"Round {iteration}")
 
-    # Customize
-    plt.xticks(df.index, df['variant'], rotation=45)
+    # Create spaced x-axis positions
+    x_positions = np.arange(len(df)) * spacing
+
+    # Plot bars grouped by iteration
+    for iteration, group in df.groupby('iteration'):
+        plt.bar(
+            x_positions[group.index],
+            group[activity_column],
+            label=f"Round {iteration}",
+            align='center'
+        )
+
+    # X-axis formatting
+    plt.xticks(
+        x_positions,
+        df['variant'],
+        rotation=45,
+        ha='right'
+    )
+
+    # Threshold line (Gain vs Loss of Function)
+    plt.axhline(
+        y=threshold,
+        color='red',
+        linestyle='--',
+        linewidth=1.5,
+        label=f"Threshold ({threshold})"
+    )
+
     plt.ylabel(activity_column.capitalize())
     plt.legend()
-    plt.axhline(y=threshold, color='red', linestyle='--', linewidth=1.5, label=f"Threshold ({threshold})")
-
     plt.tight_layout()
 
+    # Save figure
     if output_dir and output_file:
         os.makedirs(output_dir, exist_ok=True)
-        plt.savefig(os.path.join(output_dir, f"{output_file}_by_iteration.png"), dpi=300, bbox_inches='tight')
+        plt.savefig(
+            os.path.join(output_dir, f"{output_file}_by_iteration.png"),
+            dpi=300,
+            bbox_inches='tight'
+        )
 
     plt.show()
